@@ -41,7 +41,7 @@
         const email = document.getElementById('email').value;
 
         const { data, error } = await supabase
-          .from('users')
+          .from('submission')
           .insert([{ name, email }]);
 
         if (error) {
@@ -57,7 +57,7 @@
         const nameToCheck = document.getElementById('check-name').value;
 
         const { data, error } = await supabase
-          .from('users')
+          .from('submission')
           .select('*')
           .eq('name', nameToCheck);
 
