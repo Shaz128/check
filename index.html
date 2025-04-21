@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Form with Supabase</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 40px; }
+    form, .check-section { margin-bottom: 20px; }
+    input { margin: 5px; padding: 8px; }
+  </style>
+</head>
+<body>
+  <h2>Add User</h2>
+  <form id="user-form">
+    <input type="text" id="name" placeholder="Name" required>
+    <input type="email" id="email" placeholder="Email" required>
+    <button type="submit">Add User</button>
+  </form>
+
+  <h2>Check if Name Exists</h2>
+  <div class="check-section">
+    <input type="text" id="check-name" placeholder="Enter name to check">
+    <button onclick="checkName()">Check</button>
+    <p id="check-result"></p>
+  </div>
+
+  <script>
+    const supabaseUrl = 'https://YOUR-SUPABASE-URL.supabase.co';
+    const supabaseKey = 'YOUR-ANON-KEY';
+    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+    // Handle Form Submission
+    document.getElementById('user-form').addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const name = document.getElementById('name').value;
+      const email = document.getElementById('email').value;
+
+      const { data, error } = await supabase
+        .from('users')
+        .insert([{ name, email }]);
+
+      if (error) {
+        alert('Error adding user: ' + error.message);
+      } else {
+        alert('User added!');
+        document.getElementById('user-form').reset();
+      }
+    });
+
+    // Check if Name Exists
+    async function checkName() {
+      const nameToCheck = document.getElementById('check-name').value;
+
+      const { data, error } = await supabase
+        .from('users')
+        .select('*')
+        .eq('name', nameToCheck);
+
+      const resultEl = document.getElementById('check-result');
+      if (error) {
+        resultEl.textContent = 'Error: ' + error.message;
+      } else if (data.length > 0) {
+        resultEl.textContent = 'Yes! This name exists.';
+      } else {
+        resultEl.textContent = 'Nope. Name not found.';
+      }
+    }
+  </script>
+</body>
+</html>
