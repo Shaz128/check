@@ -24,50 +24,52 @@
     <p id="check-result"></p>
   </div>
 
-  <!-- Load Supabase script FIRST -->
+  <!-- Load Supabase script -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
-  <!-- Then your logic -->
+  <!-- Your script wrapped in DOMContentLoaded -->
   <script>
-    const supabaseUrl = 'https://oiktmrcdkahsgxocyzqg.supabase.co';
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pa3RtcmNka2Foc2d4b2N5enFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMjE0MzAsImV4cCI6MjA2MDY5NzQzMH0.ZVarpWFtIa_ZxwS3tU_TtPyw7yfyowmGROxiNIMByRY';
-    const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+    document.addEventListener('DOMContentLoaded', () => {
+      const supabaseUrl = 'https://oiktmrcdkahsgxocyzqg.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9pa3RtcmNka2Foc2d4b2N5enFnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDUxMjE0MzAsImV4cCI6MjA2MDY5NzQzMH0.ZVarpWFtIa_ZxwS3tU_TtPyw7yfyowmGROxiNIMByRY';
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-    // Handle form submission
-    document.getElementById('user-form').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const name = document.getElementById('name').value;
-      const email = document.getElementById('email').value;
+      // Handle form submission
+      document.getElementById('user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const name = document.getElementById('name').value;
+        const email = document.getElementById('email').value;
 
-      const { data, error } = await supabase
-        .from('users')
-        .insert([{ name, email }]);
+        const { data, error } = await supabase
+          .from('users')
+          .insert([{ name, email }]);
 
-      if (error) {
-        alert('Error adding user: ' + error.message);
-      } else {
-        alert('User added!');
-        document.getElementById('user-form').reset();
-      }
-    });
+        if (error) {
+          alert('Error adding user: ' + error.message);
+        } else {
+          alert('User added!');
+          document.getElementById('user-form').reset();
+        }
+      });
 
-    // Handle check name
-    document.getElementById('check-button').addEventListener('click', async () => {
-      const nameToCheck = document.getElementById('check-name').value;
+      // Handle check name
+      document.getElementById('check-button').addEventListener('click', async () => {
+        const nameToCheck = document.getElementById('check-name').value;
 
-      const { data, error } = await supabase
-        .from('users')
-        .select('*')
-        .eq('name', nameToCheck);
+        const { data, error } = await supabase
+          .from('users')
+          .select('*')
+          .eq('name', nameToCheck);
 
-      const resultEl = document.getElementById('check-result');
-      if (error) {
-        resultEl.textContent = 'Error: ' + error.message;
-      } else if (data.length > 0) {
-        resultEl.textContent = 'Yes! This name exists.';
-      } else {
-        resultEl.textContent = 'Nope. Name not found.';
-      }
+        const resultEl = document.getElementById('check-result');
+        if (error) {
+          resultEl.textContent = 'Error: ' + error.message;
+        } else if (data.length > 0) {
+          resultEl.textContent = 'Yes! This name exists.';
+        } else {
+          resultEl.textContent = 'Nope. Name not found.';
+        }
+      });
     });
   </script>
 </body>
